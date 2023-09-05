@@ -22,7 +22,7 @@ type Profile @entity(immutable: true) {
 	followModuleReturnData: Bytes!
 	followNFTURI: String!
 	timestamp: BigInt!
-	profileMetadata: ProfileMetadata
+	profileMetadata: ProfileMetadata @derivedFrom(field: "profile")
 }
 
 type ProfileMetadata @entity(immutable: true) {

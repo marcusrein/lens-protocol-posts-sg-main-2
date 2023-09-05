@@ -61,6 +61,10 @@ export function handlePostContent(content: Bytes): void {
 	let ctx = dataSource.context();
 	let id = ctx.getBytes(POST_ID_KEY);
 
+	log.info("HASH XXX: hash: {}", [hash]);
+	log.info("ID YYY XXX: YYY: {}", [id.toHexString()]);
+	// log.info("CTX XXX: ctx: {}", [ctx.entries.toString()]);
+
 	let post = new PostContent(id);
 	post.hash = hash;
 	post.content = content.toString();
