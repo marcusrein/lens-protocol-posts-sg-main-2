@@ -128,7 +128,7 @@ export function handleProfileMetadata(content: Bytes): void {
 				profileMetadata.animation_url,
 				profileMetadata.image,
 			]);
-			profileMetadata.save();
 		}
+		profileMetadata.save();
 	}
 }
