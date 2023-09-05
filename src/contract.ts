@@ -99,9 +99,9 @@ export function handleProfileCreated(event: ProfileCreatedEvent): void {
 }
 
 export function handleProfileMetadata(content: Bytes): void {
-	let profileMetadata = new ProfileMetadata(dataSource.stringParam());
+	let entity = new ProfileMetadata(dataSource.stringParam());
 
-	log.info("2 XXX: profileMetadataId: {}", [profileMetadata.id]);
+	log.info("2 XXX: profileMetadataId: {}", [entity.id]);
 	// log.info("3 XXX: profileMetadata name: {}", [profileMetadata.name]);
 
 	const value = json.fromBytes(content).toObject();
@@ -117,18 +117,18 @@ export function handleProfileMetadata(content: Bytes): void {
 
 		if (name && description && animation_url && image) {
 			log.info("6 XXX:  {}", ["we have all the values"]);
-			profileMetadata.name = name.toString();
-			profileMetadata.description = description.toString();
-			profileMetadata.animation_url = animation_url.toString();
-			profileMetadata.image = image.toString();
+			entity.name = name.toString();
+			entity.description = description.toString();
+			entity.animation_url = animation_url.toString();
+			entity.image = image.toString();
 
 			log.info("7 XXX: THE THINGS  {}{}{}{}", [
-				profileMetadata.name,
-				profileMetadata.description,
-				profileMetadata.animation_url,
-				profileMetadata.image,
+				entity.name,
+				entity.description,
+				entity.animation_url,
+				entity.image,
 			]);
 		}
-		profileMetadata.save();
+		entity.save();
 	}
 }
