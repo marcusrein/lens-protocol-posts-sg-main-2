@@ -4,7 +4,6 @@ import {
 	DataSourceContext,
 	DataSourceTemplate,
 	log,
-	ipfs,
 	json,
 } from "@graphprotocol/graph-ts";
 import {
@@ -48,7 +47,6 @@ export function handlePostCreated(event: PostCreatedEvent): void {
 
 	if (arweaveIndex != -1) {
 		let hash = entity.contentURI.substr(arweaveIndex + 12);
-		log.info("ARWEAVE INDEX HASH: {}", [hash]);
 		DataSourceTemplate.createWithContext("ArweaveContent", [hash], context);
 
 		return;
@@ -56,15 +54,14 @@ export function handlePostCreated(event: PostCreatedEvent): void {
 
 	if (ipfsIndex != -1) {
 		let hash = entity.contentURI.substr(ipfsIndex + 6);
-		log.info("IPFS INDEX HASH: {}", [hash]);
 		DataSourceTemplate.createWithContext("IpfsContent", [hash], context);
 	}
 }
 
 export function handlePostContent(content: Bytes): void {
 	let hash = dataSource.stringParam();
-	let ctx = dataSource.context();
-	let id = ctx.getBytes(POST_ID_KEY);
+	let context = dataSource.context();
+	let id = context.getBytes(POST_ID_KEY);
 
 	let post = new PostContent(id);
 	post.hash = hash;
@@ -73,11 +70,12 @@ export function handlePostContent(content: Bytes): void {
 }
 
 export function handleProfileCreated(event: ProfileCreatedEvent): void {
-	let entityId = event.params.followNFTURI.replace("ipfs://", "").toString();
-	let entity = Profile.load(entityId);
+	let profileId = event.params.followNFTURI.replace("ipfs://", "").toString();
+
+	let entity = Profile.load(profileId);
 
 	if (!entity) {
-		entity = new Profile(entityId);
+		entity = new Profile(profileId);
 
 		entity.profileId = event.params.profileId;
 		entity.creator = event.params.creator;
@@ -90,7 +88,7 @@ export function handleProfileCreated(event: ProfileCreatedEvent): void {
 		entity.timestamp = event.params.timestamp;
 	}
 
-	DataSourceTemplate.create("ProfileMetadata", [entityId]);
+	DataSourceTemplate.create("ProfileMetadata", [profileId]);
 
 	entity.save();
 }
