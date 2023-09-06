@@ -11,7 +11,7 @@ type PostContent @entity(immutable: true) {
 	content: String!
 }
 
-type Profile @entity(immutable: true) {
+type Profile @entity {
 	id: ID!
 	profileId: BigInt!
 	creator: Bytes!
@@ -22,14 +22,14 @@ type Profile @entity(immutable: true) {
 	followModuleReturnData: Bytes!
 	followNFTURI: String!
 	timestamp: BigInt!
-	profileMetadata: ProfileMetadata @derivedFrom(field: "profile")
+	profileMetadata: [ProfileMetadata!]! @derivedFrom(field: "profile")
 }
 
-type ProfileMetadata @entity(immutable: true) {
+type ProfileMetadata @entity {
 	id: ID!
 	name: String!
 	description: String!
 	animation_url: String!
 	image: String!
-	profile: Profile
+	profile: Profile!
 }

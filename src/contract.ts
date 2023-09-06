@@ -31,6 +31,9 @@ export function handlePostCreated(event: PostCreatedEvent): void {
 
 	entity.ownerId = event.params.profileId;
 	entity.contentURI = event.params.contentURI;
+
+	log.info("Content URI: {}", [event.params.contentURI]);
+
 	entity.timestamp = event.params.timestamp;
 
 	entity.save();
@@ -45,6 +48,7 @@ export function handlePostCreated(event: PostCreatedEvent): void {
 
 	if (arweaveIndex != -1) {
 		let hash = entity.contentURI.substr(arweaveIndex + 12);
+		log.info("ARWEAVE INDEX HASH: {}", [hash]);
 		DataSourceTemplate.createWithContext("ArweaveContent", [hash], context);
 
 		return;
@@ -52,6 +56,7 @@ export function handlePostCreated(event: PostCreatedEvent): void {
 
 	if (ipfsIndex != -1) {
 		let hash = entity.contentURI.substr(ipfsIndex + 6);
+		log.info("IPFS INDEX HASH: {}", [hash]);
 		DataSourceTemplate.createWithContext("IpfsContent", [hash], context);
 	}
 }
@@ -61,10 +66,6 @@ export function handlePostContent(content: Bytes): void {
 	let ctx = dataSource.context();
 	let id = ctx.getBytes(POST_ID_KEY);
 
-	log.info("HASH XXX: hash: {}", [hash]);
-	log.info("ID YYY XXX: YYY: {}", [id.toHexString()]);
-	// log.info("CTX XXX: ctx: {}", [ctx.entries.toString()]);
-
 	let post = new PostContent(id);
 	post.hash = hash;
 	post.content = content.toString();
@@ -72,10 +73,11 @@ export function handlePostContent(content: Bytes): void {
 }
 
 export function handleProfileCreated(event: ProfileCreatedEvent): void {
-	let entity = Profile.load(event.params.profileId.toString());
+	let entityId = event.params.followNFTURI.replace("ipfs://", "").toString();
+	let entity = Profile.load(entityId);
 
 	if (!entity) {
-		entity = new Profile(event.params.profileId.toString());
+		entity = new Profile(entityId);
 
 		entity.profileId = event.params.profileId;
 		entity.creator = event.params.creator;
@@ -88,16 +90,7 @@ export function handleProfileCreated(event: ProfileCreatedEvent): void {
 		entity.timestamp = event.params.timestamp;
 	}
 
-	let profileUri = event.params.followNFTURI;
-
-	log.info("0 XXX: profileUri: {}", [profileUri]);
-	let stringWithoutPrefix = profileUri.replace("ipfs://", "");
-	log.info(
-		"00 XXX: stringWithoutPrefix and eventually the profileMetadataID: {}",
-		[stringWithoutPrefix]
-	);
-
-	DataSourceTemplate.create("ProfileMetadata", [stringWithoutPrefix]);
+	DataSourceTemplate.create("ProfileMetadata", [entityId]);
 
 	entity.save();
 }
@@ -125,6 +118,7 @@ export function handleProfileMetadata(content: Bytes): void {
 			entity.description = description.toString();
 			entity.animation_url = animation_url.toString();
 			entity.image = image.toString();
+			entity.profile = entity.id;
 
 			log.info("7 XXX: THE THINGS  {}{}{}{}", [
 				entity.name,
