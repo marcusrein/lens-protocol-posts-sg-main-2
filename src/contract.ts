@@ -77,7 +77,6 @@ export function handleProfileCreated(event: ProfileCreatedEvent): void {
 	if (!entity) {
 		entity = new Profile(profileId);
 
-		entity.profileId = event.params.profileId;
 		entity.creator = event.params.creator;
 		entity.to = event.params.to;
 		entity.handle = event.params.handle;
@@ -95,6 +94,7 @@ export function handleProfileCreated(event: ProfileCreatedEvent): void {
 
 export function handleProfileMetadata(content: Bytes): void {
 	let entity = new ProfileMetadata(dataSource.stringParam());
+
 	const value = json.fromBytes(content).toObject();
 
 	if (value) {
@@ -109,6 +109,18 @@ export function handleProfileMetadata(content: Bytes): void {
 			entity.animation_url = animation_url.toString();
 			entity.image = image.toString();
 			entity.profile = entity.id;
+
+			/* 
+      
+      Mock DataSourceTemplate Demo
+
+      If we create a hypothetical 'entity.nestedHash' that is another hash that comes from the originally indexed file, we can use this to create another DataSourceTemplate from within this File Data Source Handler.
+
+      // entity.nestedHash = nestedHash.toString();
+
+			//DataSourceTemplate.create("FileDataSourceMetadata", [entity.nestedHash]);
+       
+      */
 		}
 		entity.save();
 	}

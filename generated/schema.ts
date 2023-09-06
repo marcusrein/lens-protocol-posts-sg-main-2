@@ -203,19 +203,6 @@ export class Profile extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get profileId(): BigInt {
-    let value = this.get("profileId");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set profileId(value: BigInt) {
-    this.set("profileId", Value.fromBigInt(value));
-  }
-
   get creator(): Bytes {
     let value = this.get("creator");
     if (!value || value.kind == ValueKind.NULL) {
@@ -422,21 +409,106 @@ export class ProfileMetadata extends Entity {
     this.set("image", Value.fromString(value));
   }
 
-  get profile(): string | null {
+  get profile(): string {
     let value = this.get("profile");
     if (!value || value.kind == ValueKind.NULL) {
-      return null;
+      throw new Error("Cannot return null for a required field.");
     } else {
       return value.toString();
     }
   }
 
-  set profile(value: string | null) {
-    if (!value) {
-      this.unset("profile");
-    } else {
-      this.set("profile", Value.fromString(<string>value));
+  set profile(value: string) {
+    this.set("profile", Value.fromString(value));
+  }
+
+  get fileDataSourceMetadataDemo(): FileDataSourceMetadataDemoLoader {
+    return new FileDataSourceMetadataDemoLoader(
+      "ProfileMetadata",
+      this.get("id")!.toString(),
+      "fileDataSourceMetadataDemo"
+    );
+  }
+}
+
+export class FileDataSourceMetadataDemo extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save FileDataSourceMetadataDemo entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type FileDataSourceMetadataDemo must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("FileDataSourceMetadataDemo", id.toString(), this);
     }
+  }
+
+  static loadInBlock(id: string): FileDataSourceMetadataDemo | null {
+    return changetype<FileDataSourceMetadataDemo | null>(
+      store.get_in_block("FileDataSourceMetadataDemo", id)
+    );
+  }
+
+  static load(id: string): FileDataSourceMetadataDemo | null {
+    return changetype<FileDataSourceMetadataDemo | null>(
+      store.get("FileDataSourceMetadataDemo", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get name(): string {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
+  }
+
+  get profile(): string {
+    let value = this.get("profile");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set profile(value: string) {
+    this.set("profile", Value.fromString(value));
+  }
+
+  get profileMetadata(): ProfileMetadataLoader {
+    return new ProfileMetadataLoader(
+      "FileDataSourceMetadataDemo",
+      this.get("id")!.toString(),
+      "profileMetadata"
+    );
   }
 }
 
@@ -455,5 +527,23 @@ export class ProfileMetadataLoader extends Entity {
   load(): ProfileMetadata[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<ProfileMetadata[]>(value);
+  }
+}
+
+export class FileDataSourceMetadataDemoLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): FileDataSourceMetadataDemo[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<FileDataSourceMetadataDemo[]>(value);
   }
 }

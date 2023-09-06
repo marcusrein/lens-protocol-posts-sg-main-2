@@ -13,7 +13,6 @@ type PostContent @entity(immutable: true) {
 
 type Profile @entity {
 	id: ID!
-	profileId: BigInt!
 	creator: Bytes!
 	to: Bytes!
 	handle: String!

@@ -31,3 +31,17 @@ export class ProfileMetadata extends DataSourceTemplate {
     DataSourceTemplate.createWithContext("ProfileMetadata", [cid], context);
   }
 }
+
+export class FileDataSourceMetadataDemo extends DataSourceTemplate {
+  static create(cid: string): void {
+    DataSourceTemplate.create("FileDataSourceMetadataDemo", [cid]);
+  }
+
+  static createWithContext(cid: string, context: DataSourceContext): void {
+    DataSourceTemplate.createWithContext(
+      "FileDataSourceMetadataDemo",
+      [cid],
+      context
+    );
+  }
+}
