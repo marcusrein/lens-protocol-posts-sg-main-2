@@ -30,9 +30,6 @@ export function handlePostCreated(event: PostCreatedEvent): void {
 
 	entity.ownerId = event.params.profileId;
 	entity.contentURI = event.params.contentURI;
-
-	log.info("Content URI: {}", [event.params.contentURI]);
-
 	entity.timestamp = event.params.timestamp;
 
 	entity.save();
